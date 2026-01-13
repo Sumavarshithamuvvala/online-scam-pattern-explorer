@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Online Scam Pattern Explorer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      :root {
+        --primary: #2563eb;
+        --danger: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1f2937;
+        --muted: #6b7280;
+      }
+
+      * {
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      header {
+        background: var(--primary);
+        color: white;
+        padding: 1.2rem 2rem;
+        text-align: center;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+
+      header p {
+        margin: 0.3rem 0 0;
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: auto;
+        padding: 1.5rem;
+      }
+
+      .section {
+        margin-bottom: 2rem;
+      }
+
+      .section h2 {
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1rem;
+      }
+
+      .card {
+        background: var(--card);
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .card:hover {
+        transform: translateY(-3px);
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        font-size: 0.75rem;
+        border-radius: 999px;
+        background: #fee2e2;
+        color: var(--danger);
+        margin-bottom: 0.4rem;
+      }
+      .quiz,
+      .report {
+        background: var(--card);
+        padding: 1.2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      }
+      .red-flag {
+        color: var(--danger);
+        font-weight: 600;
+      }
+
+      button {
+        background: var(--primary);
+        border: none;
+        color: white;
+        padding: 0.6rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      button.secondary {
+        background: #64748b;
+      }
+
+      button:hover {
+        opacity: 0.9;
+      }
+
+      .quiz-option {
+        margin: 0.4rem 0;
+      }
+
+      textarea,
+      select {
+        width: 100%;
+        padding: 0.6rem;
+        border-radius: 6px;
+        border: 1px solid #cbd5f5;
+      }
+
+      footer {
+        text-align: center;
+        padding: 1rem;
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Online Scam Pattern Explorer</h1>
+      <p>Understand scam psychology • Identify red flags • Stay protected</p>
+    </header>
+
+    <div class="container">
+      <!-- Scam Categories -->
+      <section class="section">
+        <h2>Common Scam Patterns</h2>
+        <div class="cards">
+          <div class="card" onclick="openScamPage('otp')">
+            <div class="badge">High Risk</div>
+            <h3>OTP / KYC Fraud</h3>
+            <p>Bank impersonation and urgent verification scams.</p>
+          </div>
+          <div class="card" onclick="openScamPage('job')">
+            <div class="badge">Medium Risk</div>
+            <h3>Fake Job Offers</h3>
+            <p>Easy money and registration-fee traps.</p>
+          </div>
+          <div class="card" onclick="openScamPage('loan')">
+            <div class="badge">High Risk</div>
+            <h3>Loan & Credit Scams</h3>
+            <p>Instant loan approval with advance fee fraud.</p>
+          </div>
+        </div>
+      </section>
+
+     
+
+      <!-- Quiz -->
+      <section class="section">
+        <h2>Quick Scam Awareness Quiz</h2>
+        <div class="quiz">
+          <p id="quizQuestion"></p>
+          <div id="quizOptions"></div>
+          <br />
+          <button onclick="nextQuestion()">Next</button>
+          <p id="quizResult"></p>
+        </div>
+      </section>
+
+      <!-- Scam Message Analyzer -->
+      <section class="section">
+        <h2>Scam Message Analyzer</h2>
+        <div class="report">
+          <p>
+            Paste an email or message below. The system will analyze common scam
+            indicators.
+          </p>
+
+          <textarea
+            id="messageInput"
+            rows="6"
+            placeholder="Paste the email or message content here..."
+          ></textarea>
+
+          <br /><br />
+          <button onclick="analyzeMessage()">Analyze Message</button>
+
+          <div id="analysisResult" style="margin-top: 1rem"></div>
+          <!-- USER VERDICT ADDITION -->
+          <div id="userVerdictSection" style="display: none; margin-top: 1rem">
+            <p><strong>Your verdict:</strong></p>
+            <p style="font-size: 0.85rem; color: #6b7280">
+              Mark this message as scam or safe based on your judgment.
+            </p>
+            <button onclick="submitUserVerdict('Scam')">⚠️ Scam</button>
+            <button onclick="submitUserVerdict('Safe')">✅ Safe</button>
+            <p id="userVerdictFeedback" style="margin-top: 0.5rem"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Report -->
+      <section class="section">
+        <h2>Report a Scam</h2>
+        <div class="report">
+          <p>
+            To report a scam, click the button below and fill out the Google
+            Form.
+          </p>
+          <button onclick="openReportForm()">Submit Report</button>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      Educational project • Do not share sensitive data • Stay alert
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+
+    <script>
+      // ================= QUIZ =================
+      const quizData = [
+        {
+          q: "You receive a call saying your bank account will be blocked unless you share an OTP.",
+          options: [
+            "Share OTP immediately",
+            "Disconnect and contact bank directly",
+          ],
+          answer: 1,
+        },
+        {
+          q: "A WhatsApp message offers easy daily income with no work.",
+          options: ["Join immediately", "Ignore and block the sender"],
+          answer: 1,
+        },
+        {
+          q: "A loan agent asks for processing fee before approval.",
+          options: ["Pay the fee", "Reject the offer"],
+          answer: 1,
+        },
+        {
+          q: "An email threatens account suspension and asks to click a link.",
+          options: ["Click the link", "Verify through official website"],
+          answer: 1,
+        },
+        {
+          q: "Who can legally ask for your OTP?",
+          options: ["Bank staff", "No one"],
+          answer: 1,
+        },
+      ];
+
+      let currentQuestion = 0;
+
+      function loadQuestion() {
+        const q = quizData[currentQuestion];
+        document.getElementById("quizQuestion").innerHTML =
+          "<strong>" + q.q + "</strong>";
+
+        const optionsDiv = document.getElementById("quizOptions");
+        optionsDiv.innerHTML = "";
+        q.options.forEach((opt, index) => {
+          optionsDiv.innerHTML += `
+            <div class="quiz-option">
+              <input type="radio" name="quiz" onclick="checkAnswer(${
+                index === q.answer
+              })">
+              ${opt}
+            </div>
+          `;
+        });
+
+        document.getElementById("quizResult").innerHTML = "";
+      }
+
+      function checkAnswer(correct) {
+        document.getElementById("quizResult").innerHTML = correct
+          ? "<span style='color:green;'>Correct ✔</span>"
+          : "<span style='color:red;'>Wrong ✖ This is a scam sign</span>";
+      }
+
+      function nextQuestion() {
+        currentQuestion = (currentQuestion + 1) % quizData.length;
+        loadQuestion();
+      }
+
+      loadQuestion();
+            const API_KEY = ""; // Google NLP API Key
+
+      // ================= FIREBASE SETUP =================
+      const firebaseConfig = {
+        apiKey: "",
+        authDomain: "scampatternexplorer.firebaseapp.com",
+        projectId: "scampatternexplorer",
+        storageBucket: "scampatternexplorer.firebasestorage.app",
+        messagingSenderId: "101113167866",
+        appId: "1:101113167866:web:f80a8a76bf0c058774ee43",
+        measurementId: "G-WDWX8FK7ES",
+      };
+
+      const app = firebase.initializeApp(firebaseConfig);
+      const analytics = firebase.analytics();
+      const db = firebase.firestore();
+      let lastScamDocRef = null;
+
+      // ================= SCAM CARD REDIRECT =================
+      function openScamPage(type) {
+        window.location.href = "scam.html?type=" + type;
+      }
+
+
+      // ================= MESSAGE ANALYZER =================
+      async function analyzeMessage() {
+        const input = document.getElementById("messageInput");
+        const resultDiv = document.getElementById("analysisResult");
+        if (!input || !resultDiv) return;
+
+        const text = input.value.trim();
+        if (!text) {
+          resultDiv.innerHTML =
+            "<p style='color:red;'>Please paste a message to analyze.</p>";
+          return;
+        }
+
+        resultDiv.innerHTML = "<p>Analyzing message...</p>";
+
+        const categories = {
+          Urgency: [
+            {
+              pattern:
+                /urgent|immediately|within 24 hours|account will be blocked/,
+              weight: 2,
+              reason: "Creates urgency or fear",
+            },
+          ],
+          "Authority impersonation": [
+            {
+              pattern: /bank|income tax|customs|police/,
+              weight: 1,
+              reason: "Authority impersonation",
+            },
+          ],
+          "Financial trigger": [
+            {
+              pattern: /otp|one time password|verification code/,
+              weight: 3,
+              reason: "Requests OTP or verification code",
+            },
+            {
+              pattern: /processing fee|registration fee|advance payment/,
+              weight: 3,
+              reason: "Requests upfront payment",
+            },
+            {
+              pattern: /free money|guaranteed income|easy earnings/,
+              weight: 3,
+              reason: "Too-good-to-be-true offer",
+            },
+          ],
+          "Link risk": [
+            {
+              pattern: /click here|verify now|update kyc/,
+              weight: 2,
+              reason: "Suspicious action request",
+            },
+            {
+              pattern: /http:\/\/|https:\/\//,
+              weight: 1,
+              reason: "Contains external link",
+            },
+          ],
+        };
+
+        let totalScore = 0;
+        let reasons = [];
+        let categoryScores = {};
+
+        let behavioralScore = 0;
+        const lowerText = text.toLowerCase();
+
+        const urgencyMatches = lowerText.match(
+          /urgent|immediately|now|today|final|blocked/g
+        );
+        if (urgencyMatches && urgencyMatches.length >= 2) {
+          behavioralScore += 2;
+          reasons.push("High urgency density (behavioral pattern)");
+        }
+
+        if (/click|verify|update|submit|confirm|respond/.test(lowerText)) {
+          behavioralScore += 1;
+          reasons.push("Imperative action request");
+        }
+
+        const capsCount = text.replace(/[^A-Z]/g, "").length;
+        if (text.length > 30 && capsCount / text.length > 0.3) {
+          behavioralScore += 1;
+          reasons.push("Abnormal capitalization behavior");
+        }
+
+        if ((text.match(/!/g) || []).length >= 3) {
+          behavioralScore += 1;
+          reasons.push("Excessive punctuation pressure");
+        }
+
+        if (
+          /bank|government|income tax|customs|police/.test(lowerText) &&
+          /http:\/\/|https:\/\//.test(lowerText)
+        ) {
+          behavioralScore += 2;
+          reasons.push("Authority impersonation combined with link");
+        }
+
+        for (const cat in categories) {
+          let catScore = 0;
+          categories[cat].forEach((r) => {
+            if (r.pattern.test(text.toLowerCase())) {
+              catScore += r.weight;
+              reasons.push(r.reason);
+            }
+          });
+          categoryScores[cat] = catScore;
+          totalScore += catScore;
+        }
+        totalScore += behavioralScore;
+
+        let barsHTML = "";
+        for (const cat in categoryScores) {
+          const pct =
+            totalScore > 0
+              ? Math.round((categoryScores[cat] / totalScore) * 100)
+              : 0;
+          barsHTML += `
+            <div style="margin-bottom: 0.4rem;">
+              <strong>${cat}:</strong>
+              <div style="background:#e5e7eb;border-radius:6px;height:16px;width:100%;">
+                <div style="width:${pct}%;background:#2563eb;height:16px;border-radius:6px;"></div>
+              </div>
+              <span style="font-size:0.75rem;color:#6b7280;">${pct}%</span>
+            </div>
+          `;
+        }
+
+        let sentimentScore = 0;
+        try {
+          const response = await fetch(
+            `https://language.googleapis.com/v1/documents:analyzeSentiment?key=${API_KEY}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                document: { type: "PLAIN_TEXT", content: text },
+                encodingType: "UTF8",
+              }),
+            }
+          );
+          const data = await response.json();
+          if (data.documentSentiment)
+            sentimentScore = data.documentSentiment.score;
+        } catch (err) {
+          console.error("Google NLP error:", err);
+        }
+
+        let verdict = "";
+        let color = "";
+        if (totalScore >= 6 || sentimentScore < -0.25) {
+          verdict = "⚠️ Likely Scam";
+          color = "red";
+        } else if (totalScore >= 3 || sentimentScore < 0) {
+          verdict = "⚠️ Suspicious";
+          color = "orange";
+        } else {
+          verdict = "✅ Likely Safe";
+          color = "green";
+        }
+
+        resultDiv.innerHTML = `
+          <h3 style="color:${color};">${verdict}</h3>
+          <p><strong>Heuristic Risk Score:</strong> ${totalScore}</p>
+          <p><strong>Google Sentiment Score:</strong> ${sentimentScore}</p>
+          <p><strong>Reasons:</strong></p>
+          <ul>
+            ${
+              reasons.length
+                ? reasons.map((r) => `<li>${r}</li>`).join("")
+                : "<li>No common scam indicators found</li>"
+            }
+          </ul>
+          <p style="font-size:0.85rem;color:#6b7280;">
+            This combines heuristic analysis and Google NLP sentiment. Negative messages may indicate scam-like urgency or pressure.
+          </p>
+          <h4>Explainable Risk Breakdown:</h4>
+          ${barsHTML}
+        `;
+
+        try {
+          lastScamDocRef = await db.collection("scamReports").add({
+            text: text,
+            totalScore: totalScore,
+            sentimentScore: sentimentScore,
+            verdict: verdict,
+            reasons: reasons,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          });
+          console.log("Message saved to Firebase!");
+          document.getElementById("userVerdictSection").style.display = "block";
+          document.getElementById("userVerdictFeedback").innerHTML = "";
+        } catch (err) {
+          console.error("Firebase save error:", err);
+        }
+      }
+
+      function openReportForm() {
+        const formLink = "https://forms.gle/8JHVR2qFpxxgXsKX8";
+        window.open(formLink, "_blank");
+      }
+
+      async function submitUserVerdict(userVerdict) {
+        if (!lastScamDocRef) return;
+
+        try {
+          await lastScamDocRef.update({
+            userVerdict: userVerdict,
+          });
+
+          document.getElementById("userVerdictFeedback").innerText =
+            "Thank you! Your verdict has been saved.";
+
+          document
+            .querySelectorAll("#userVerdictSection button")
+            .forEach((btn) => (btn.disabled = true));
+        } catch (err) {
+          console.error("User verdict save error:", err);
+        }
+      }
+    </script>
+  </body>
+</html>

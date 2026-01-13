@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Scam Details</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin:0;
+  background:#f8fafc;
+  font-family:system-ui;
+}
+header {
+  background:#2563eb;
+  color:white;
+  padding:1.2rem;
+  text-align:center;
+}
+.container {
+  max-width:1000px;
+  margin:auto;
+  padding:1.5rem;
+}
+.card {
+  background:white;
+  padding:1.2rem;
+  border-radius:10px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+  margin-bottom:1.2rem;
+}
+.step {
+  padding:0.6rem;
+  border-left:4px solid #2563eb;
+  background:#f1f5f9;
+  margin-bottom:0.5rem;
+}
+.stop {
+  border-color:#dc2626;
+  background:#fee2e2;
+}
+button {
+  background:#2563eb;
+  color:white;
+  border:none;
+  padding:0.6rem 1rem;
+  border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1 id="title"></h1>
+  <p id="subtitle"></p>
+</header>
+
+<div class="container">
+
+<div class="card">
+  <h2>🧠 Scam Psychology</h2>
+  <p id="psychology"></p>
+</div>
+
+<div class="card">
+  <h2>🔄 How the Scam Works</h2>
+  <div id="steps"></div>
+</div>
+
+<div class="card">
+  <h2>🚨 Red Flags</h2>
+  <ul id="flags"></ul>
+</div>
+
+<div class="card">
+  <h2>✅ How to Stay Safe</h2>
+  <ul id="safety"></ul>
+</div>
+
+<button onclick="history.back()">⬅ Back</button>
+
+</div>
+
+<script>
+const type = new URLSearchParams(location.search).get("type");
+
+const data = {
+  otp: {
+    title:"OTP / KYC Fraud",
+    subtitle:"⚠️ High-risk banking scam",
+    psychology:"Scammers create fear and urgency by impersonating banks.",
+    steps:[
+      "📞 Fake bank call",
+      "⏱️ Urgency created",
+      "❌ OTP demanded",
+      "💸 Money stolen"
+    ],
+    flags:["Urgent tone","OTP request","Unknown number"],
+    safety:["Never share OTP","Banks never call","Block & report"]
+  },
+  job: {
+    title:"Fake Job Scam",
+    subtitle:"⚠️ Easy money trap",
+    psychology:"Exploits job insecurity and greed.",
+    steps:[
+      "📲 WhatsApp message",
+      "💰 High salary promise",
+      "💳 Fee request",
+      "🚫 Scammer disappears"
+    ],
+    flags:["No interview","Fee demand"],
+    safety:["Verify company","No job asks money"]
+  },
+  loan: {
+    title:"Loan Scam",
+    subtitle:"⚠️ Advance fee fraud",
+    psychology:"Targets financial stress.",
+    steps:[
+      "📢 Loan ad",
+      "✅ Fake approval",
+      "💸 Advance fee",
+      "❌ No loan"
+    ],
+    flags:["Instant approval","Advance payment"],
+    safety:["Check RBI lenders","No upfront fee"]
+  }
+};
+
+const s=data[type];
+if(s){
+  title.innerText=s.title;
+  subtitle.innerText=s.subtitle;
+  psychology.innerText=s.psychology;
+  steps.innerHTML=s.steps.map(x=>`<div class="step ${x.includes('OTP')?'stop':''}">${x}</div>`).join("");
+  flags.innerHTML=s.flags.map(x=>`<li>🚩 ${x}</li>`).join("");
+  safety.innerHTML=s.safety.map(x=>`<li>✔️ ${x}</li>`).join("");
+}
+</script>
+
+</body>
+</html>
